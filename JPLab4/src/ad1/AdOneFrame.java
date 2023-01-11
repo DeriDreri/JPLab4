@@ -2,6 +2,8 @@ package ad1;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
@@ -10,8 +12,9 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.*;
 
-public class AdOneFrame extends JFrame {
+public class AdOneFrame extends JFrame implements ActionListener{
 
 	/**
 	 * 
@@ -19,7 +22,9 @@ public class AdOneFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JList list;
+	private DefaultListModel model;
 	private JTextField textField;
+	private JButton[] buttons;
 
 	/**
 	 * Launch the application.
@@ -60,31 +65,35 @@ public class AdOneFrame extends JFrame {
 		scrollPane.setViewportView(list);
 		list.setFont(new Font("Tahoma", Font.PLAIN, 27));
 		list.setBackground(new Color(255, 255, 255));
-		list.setModel(new AbstractListModel() {
-			String[] values = new String[] {"10", "20", "30"};
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		});
+		model = new DefaultListModel();
+		list.setModel(model);
 		
 		textField = new JTextField();
 		textField.setBounds(518, 456, 104, 41);
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
-		JButton btnNewButton = new JButton("Edytuj");
-		btnNewButton.setBounds(353, 456, 104, 41);
-		contentPane.add(btnNewButton);
+		buttons = new JButton[3];
+		buttons[0] = new JButton("Edytuj");
+		buttons[0].setBounds(353, 456, 104, 41);
+		buttons[0].addActionListener(this);
+		contentPane.add(buttons[0]);
 		
-		JButton btnUsu = new JButton("Usu\u0144");
-		btnUsu.setBounds(200, 456, 104, 41);
-		contentPane.add(btnUsu);
+		buttons[1] = new JButton("Usu\u0144");
+		buttons[1].setBounds(200, 456, 104, 41);
+		buttons[1].addActionListener(this);
+		contentPane.add(buttons[1]);
 		
-		JButton btnNewButton_1_1 = new JButton("Dodaj");
-		btnNewButton_1_1.setBounds(40, 456, 104, 41);
-		contentPane.add(btnNewButton_1_1);
+		buttons[2] = new JButton("Dodaj");
+		buttons[2].setBounds(40, 456, 104, 41);
+		buttons[2].addActionListener(this);
+		contentPane.add(buttons[2]);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == buttons[2]) {
+			model.addElement(textField.getText());
+		}
 	}
 }
