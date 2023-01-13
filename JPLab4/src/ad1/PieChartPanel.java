@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Arc2D;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -62,12 +61,11 @@ public class PieChartPanel extends JPanel {
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.setColor(Color.white);
 		g2D.fillOval(0, 0, 380, 380);
-		int lastAngle = 0;
+		double lastAngle = 0;
 		for (int i = 0; i < pieChartElements.size(); i++) {
 			g2D.setColor(pieChartColors.get(i));
-			int arcAngle = (pieChartElements.get(i) * 360) / pieChartSum ;
-			System.out.println(arcAngle);
-			g2D.fillArc(0, 0, 380, 380, lastAngle, arcAngle);
+			double arcAngle = (double)pieChartElements.get(i) / (double)pieChartSum * 360;
+			g2D.fill(new Arc2D.Double(0, 0, 380, 380, lastAngle, arcAngle, Arc2D.PIE));
 			lastAngle += arcAngle;
 
 		}

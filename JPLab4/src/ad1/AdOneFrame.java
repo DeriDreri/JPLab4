@@ -94,13 +94,21 @@ public class AdOneFrame extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == buttons[2]) {
-			model.addElement(textField.getText());
+			String number = textField.getText();
+			model.addElement(number);
+			pieChart.addPieChartElement(Integer.parseInt(number));
 		}
 		else if(e.getSource() == buttons[1]) {
-			this.pieChart.addPieChartElement(10);
+			int selectedIndex = list.getSelectedIndex();
+			this.pieChart.removePieChartElement(selectedIndex);
+			model.remove(selectedIndex);
 		}
 		else if(e.getSource() == buttons[0]) {
-			this.pieChart.removePieChartElement(0);
+			String number = textField.getText();
+			int selectedIndex = list.getSelectedIndex();
+			model.remove(selectedIndex);
+			model.insertElementAt(number, selectedIndex);
+			pieChart.editPieChartElement(selectedIndex, Integer.parseInt(number));
 		}
 	}
 }
