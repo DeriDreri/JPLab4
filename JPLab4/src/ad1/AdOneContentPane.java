@@ -16,7 +16,6 @@ public class AdOneContentPane extends JPanel {
 	 */
 	public AdOneContentPane() {
 		this.setBorder(new EmptyBorder(5, 5, 5, 5));
-		this.setBackground(Color.RED);
 	}
 
 }

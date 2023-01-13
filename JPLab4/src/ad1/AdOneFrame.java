@@ -23,6 +23,7 @@ public class AdOneFrame extends JFrame implements ActionListener{
 	private JPanel contentPane;
 	private JList list;
 	private DefaultListModel model;
+	private PieChartPanel pieChart;
 	private JTextField textField;
 	private JButton[] buttons;
 
@@ -52,10 +53,10 @@ public class AdOneFrame extends JFrame implements ActionListener{
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JPanel panel = new PieChartPanel();
-		panel.setBounds(40, 40, 418, 400);
+		pieChart = new PieChartPanel();
+		pieChart.setBounds(40, 40, 418, 400);
 		
-		contentPane.add(panel);
+		contentPane.add(pieChart);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(518, 40, 104, 399);
@@ -94,6 +95,12 @@ public class AdOneFrame extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == buttons[2]) {
 			model.addElement(textField.getText());
+		}
+		else if(e.getSource() == buttons[1]) {
+			this.pieChart.addPieChartElement(10);
+		}
+		else if(e.getSource() == buttons[0]) {
+			this.pieChart.removePieChartElement(0);
 		}
 	}
 }
