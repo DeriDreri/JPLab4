@@ -1,5 +1,6 @@
 package ad1;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 public class PieChartPanel extends JPanel {
 
@@ -27,6 +29,8 @@ public class PieChartPanel extends JPanel {
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		flowLayout.setVgap(200);
 		flowLayout.setHgap(200);
+		this.setBackground(Color.white);
+		this.setBorder(new LineBorder(Color.black, 1));
 		this.colorRandomizer = new Random();
 		this.pieChartSum = 0;
 		this.pieChartElements = new ArrayList<Integer>();
@@ -41,7 +45,7 @@ public class PieChartPanel extends JPanel {
 		this.repaint();
 	}
 
-	public void removePieChartElement(int index) {
+	public void removePieChartElement(int index) throws IndexOutOfBoundsException{
 		int removedValue = pieChartElements.remove(index);
 		pieChartColors.remove(index);
 		pieChartSum -= removedValue;
@@ -56,16 +60,32 @@ public class PieChartPanel extends JPanel {
 		this.repaint();
 
 	}
-
+	
+	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2D = (Graphics2D) g;
-		g2D.setColor(Color.white);
-		g2D.fillOval(0, 0, 380, 380);
+		super.paint(g2D);
+		g2D.setStroke(new BasicStroke(1));
+		if(pieChartElements.size() == 0) {
+			g2D.setColor(Color.black);
+			g2D.drawOval(19, 10, 380, 380);
+		}
+		
+		if(pieChartElements.size() == 1) {
+			g2D.setColor(pieChartColors.get(0));
+			g2D.fillOval(19, 10, 380, 380);
+			g2D.setColor(Color.black);
+			g2D.drawOval(19, 10, 380, 380);
+			return;
+		}
+		
 		double lastAngle = 0;
 		for (int i = 0; i < pieChartElements.size(); i++) {
 			g2D.setColor(pieChartColors.get(i));
 			double arcAngle = (double)pieChartElements.get(i) / (double)pieChartSum * 360;
-			g2D.fill(new Arc2D.Double(0, 0, 380, 380, lastAngle, arcAngle, Arc2D.PIE));
+			g2D.fill(new Arc2D.Double(19, 10, 380, 380, lastAngle, arcAngle, Arc2D.PIE));
+			g2D.setColor(Color.black);
+			g2D.draw(new Arc2D.Double(19, 10, 380, 380, lastAngle, arcAngle, Arc2D.PIE));
 			lastAngle += arcAngle;
 
 		}
