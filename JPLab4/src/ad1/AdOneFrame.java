@@ -6,14 +6,14 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.*;
 
 public class AdOneFrame extends JFrame implements ActionListener {
 
@@ -64,11 +64,11 @@ public class AdOneFrame extends JFrame implements ActionListener {
 		scrollPane.setBounds(518, 40, 104, 399);
 		contentPane.add(scrollPane);
 
-		list = new JList();
+		list = new JList<String>();
 		scrollPane.setViewportView(list);
 		list.setFont(new Font("Tahoma", Font.PLAIN, 27));
 		list.setBackground(new Color(255, 255, 255));
-		model = new DefaultListModel();
+		model = new DefaultListModel<String>();
 		list.setModel(model);
 
 		textField = new JTextField();
