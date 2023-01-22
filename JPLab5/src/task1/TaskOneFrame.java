@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -108,9 +109,11 @@ public class TaskOneFrame extends JFrame implements ActionListener {
 			equationElementField.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		}
 
-		operationField = new JTextField();
+		operationField = new JTextField("+");
 		operationField.setColumns(10);
 		operationField.setBounds(20, 62, 70, 40);
+		operationField.setHorizontalAlignment(SwingConstants.CENTER);
+		operationField.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		contentPane.add(operationField);
 
 		Button solutionButton = new Button("Rozwi\u0105\u017C");
@@ -125,20 +128,22 @@ public class TaskOneFrame extends JFrame implements ActionListener {
 		contentPane.add(solutionField);
 	}
 
-	private Variable[] generateVariablesTable() {
+	private Variable[] generateVariablesTable() throws IllegalArgumentException {
 		Variable[] toReturn = new Variable[equationElementsFields.length];
 		for (int i = 0; i < equationElementsFields.length; i++) {
 
 			String text = equationElementsFields[i].getText();
-
+			
 			if (text.isEmpty()) {
 				toReturn[i] = new Variable(0);
 				continue;
 			}
 			try {
 				int value = Integer.parseInt(text);
+				if (value < 0 || value > 9) throw new IllegalArgumentException("Dozwolone jedynie cyfry w przedziale [0-10]");
 				toReturn[i] = new Variable(value);
 			} catch (NumberFormatException e) {
+				if (text.length() > 1) throw new IllegalArgumentException("Dozwolone jedynie zmienne bêd¹ce literami");
 				var potentialNewVariable = new Variable(text.charAt(0));
 
 				int detected = -1;
@@ -158,31 +163,42 @@ public class TaskOneFrame extends JFrame implements ActionListener {
 		}
 		return toReturn;
 	}
-
-	private String buildSolutionString() {
-		StringBuilder textBuilder = new StringBuilder("");
-		for (int i = 0; i < 3; i++) {
-			textBuilder.append("a" + (i + 1) + " = " + equationElementsFields[i].getText() + ", ");
+	
+	private Operation getOperation() {
+		switch(operationField.getText()) {
+		case "+":
+			return Operation.ADDING;
+		
+		case "-":
+			return Operation.SUBTRACTING;
+			
+		case "*":
+			return Operation.MULTIPLYING;
+		
+		default:
+			throw new IllegalArgumentException("Niepoprawna operacja: dozwolne jedynie '+', '-' lub '*'");
 		}
-		textBuilder.append("\n");
-		for (int i = 0; i < 3; i++) {
-			textBuilder.append("b" + (i + 1) + " = " + equationElementsFields[3 + i].getText() + ",");
-		}
-		textBuilder.append("\n");
-		for (int i = 0; i < 4; i++) {
-			textBuilder.append("c" + (i + 1) + " = " + equationElementsFields[6 + i].getText() + ",");
-		}
-		return textBuilder.toString();
 	}
 	
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		var solver = new EquationSolver(generateVariablesTable());
-		/*
-		 * solver.printElements(); System.out.println("---");
-		 * solver.printIteratableElements(); System.out.println("---");
-		 * solver.printElements(); System.out.println("-------------");
-		 */
-		//solutionField.setText(buildSolutionString());
+	public void actionPerformed(ActionEvent event) {
+		try {
+			var solver = new EquationSolver(generateVariablesTable());
+			Operation operation = getOperation();
+			if(solver.findSolution(operation)) {
+				var solutionsTable = solver.getSolutions();
+				StringBuilder textBuilder = new StringBuilder("");
+				for (Variable i : solutionsTable) {
+					textBuilder.append(i.getName() + " = " + i.getValue() + " ");
+				}
+				solutionField.setText(textBuilder.toString());
+			}
+			else solutionField.setText("Brak rozwi¹zañ");
+		} catch (IllegalArgumentException exception) {
+			String message = exception.getMessage();
+			JOptionPane.showMessageDialog(this, message, "Niedozwolona operacja", JOptionPane.WARNING_MESSAGE);
+		}
+		
+		
 	}
 }
