@@ -23,6 +23,7 @@ public class EquationSolver {
 	}
 	
 	public boolean findSolution(Operation desiredOperation) {
+		if (variablesForIterations.size() == 0) throw new IllegalArgumentException("Brak symboli");
 		this.desiredOperation = desiredOperation;
 		return iterate(this.variablesForIterations);
 	}

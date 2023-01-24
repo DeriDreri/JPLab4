@@ -183,7 +183,8 @@ public class TaskOneFrame extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		try {
-			var solver = new EquationSolver(generateVariablesTable());
+			var variables = generateVariablesTable();
+			var solver = new EquationSolver(variables);
 			Operation operation = getOperation();
 			if(solver.findSolution(operation)) {
 				var solutionsTable = solver.getSolutions();

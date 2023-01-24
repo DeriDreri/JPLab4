@@ -2,61 +2,92 @@ package task2;
 
 import java.util.ArrayList;
 
-import javax.swing.JTextField;
-
 public class StringHandler {
 	
 	private String screenString;
-	private boolean lastButtonWasNumberButton;
+	private ButtonPressed lastButtonPressed;
 	private boolean inputBigLetters;
 	private final ArrayList<Character> operationSigns;
 	private final StringOperationSolver operationSolver;
+	private boolean wasSolved;
 	
-	public StringHandler(JTextField screenField) {
+	public StringHandler() {
 		this.screenString = "";
-		this.lastButtonWasNumberButton = false;
+		this.lastButtonPressed = ButtonPressed.OTHER;
 		this.inputBigLetters = false;
 		this.operationSigns = new ArrayList<Character>();
 		this.operationSigns.add('+');
 		this.operationSigns.add('-');
 		this.operationSigns.add('/');
 		this.operationSolver = new StringOperationSolver();
+		this.wasSolved = false;
 	}
 	
 	public String getScreenString() {
 		return screenString;
 	}
 	
+	public void refresh() {
+		if(wasSolved) {
+			screenString = "";
+			wasSolved = false;
+		}
+	}
+
+	public void addSign(ButtonPressed buttonInput) {
+		
+		int indexOfChar;
+		if(!buttonInput.equals(lastButtonPressed)) {
+			indexOfChar = 0;
+		}
+		else {
+			char lastChar = screenString.charAt(screenString.length()-1);
+			if(lastChar < 97) lastChar += 32;
+			indexOfChar = buttonInput.toString().indexOf(lastChar);
+			indexOfChar++;
+			if(indexOfChar >= buttonInput.toString().length()) indexOfChar = 0;
+			removeLastSign();
+		}
+		
+		char signToAdd = buttonInput.toString().charAt(indexOfChar);
+		if (inputBigLetters) signToAdd = (char) (signToAdd - 32);
+		screenString += signToAdd;
+		lastButtonPressed = buttonInput;
+	}
+	
 	public void switchSmallBigLetters() {
-		lastButtonWasNumberButton = false;
+		lastButtonPressed = ButtonPressed.OTHER;
 		if(inputBigLetters) inputBigLetters = false;
 		else inputBigLetters = true;
 	}
 	
 	public void removeLastSign() {
-		lastButtonWasNumberButton = false;
+		lastButtonPressed = ButtonPressed.OTHER;
 		int stringLength = screenString.length();
 		if (stringLength == 0) return;
-		screenString = screenString.substring(0, stringLength-2);
+		screenString = screenString.substring(0, stringLength-1);
 	}
 	
 	public void removeAllSigns() {
-		lastButtonWasNumberButton = false;
+		lastButtonPressed = ButtonPressed.OTHER;
 		screenString = "";
 	}
 	
 	public void addOpperationSymbol(String operation) throws IllegalArgumentException {
-		if (!operationSigns.contains(operation.charAt(0)) || operation.length() != 1) throw new IllegalArgumentException();
+		if (!operationSigns.contains(operation.charAt(0)) || operation.length() != 1 || screenString.length() == 0) throw new IllegalArgumentException();
 		int stringLength = screenString.length();
-		char lastSign = screenString.charAt(stringLength-2);
+		char lastSign = screenString.charAt(stringLength-1);
 		if (operationSigns.contains(lastSign)) removeLastSign();
-		lastButtonWasNumberButton = false;
+		lastButtonPressed = ButtonPressed.OTHER;
 		screenString += operation;
 	}
 	
 	public void solveOperation() {
-		lastButtonWasNumberButton = false;
+		lastButtonPressed = ButtonPressed.OTHER;
+		char lastSign = screenString.charAt(screenString.length()-1);
+		if (operationSigns.contains(lastSign)) removeLastSign(); 
 		screenString += operationSolver.solveOperation(screenString);
+		wasSolved = true;
 	}
 
 }
